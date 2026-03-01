@@ -2986,15 +2986,15 @@
     }
 
     /* ═══════════════════════════════════════════════
-       MOBILE RESPONSIVE — 480px and below
+       MOBILE RESPONSIVE — 600px and below
     ═══════════════════════════════════════════════ */
     @media (max-width: 600px) {
 
       /* Bigger touch targets */
       .adj-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1.2rem;
+        width: 42px !important;
+        height: 42px !important;
+        font-size: 1.3rem !important;
       }
 
       .nav-btn {
@@ -3002,179 +3002,181 @@
         font-size: 1rem;
       }
 
+      /* Main content less padding */
+      .main-content {
+        padding: 0.25rem !important;
+      }
+
       /* Header */
       .settings-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
       }
 
       .settings-title {
-        font-size: 1.1rem;
+        font-size: 1.1rem !important;
       }
 
       .settings-clock {
         position: static !important;
         transform: none !important;
-        font-size: 0.9rem;
+        font-size: 0.9rem !important;
       }
 
-      /* Top controls: stack vertically */
+      /* Top controls: stack vertically - temp | hum, readings full width below */
       .settings-controls {
+        display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 0.5rem;
+        gap: 0.5rem !important;
       }
 
-      /* Center readings takes full width */
+      /* Center readings takes full width - third item spans both columns */
       .current-readings {
-        grid-column: 1 / -1;
-        min-width: unset;
-        padding: 1rem;
+        grid-column: 1 / -1 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        padding: 0.75rem 1rem !important;
+        order: -1 !important;
       }
 
       .readings-display {
-        font-size: 2rem;
+        font-size: 1.8rem !important;
       }
 
-      /* Status indicators: 3 cols still ok on mobile */
+      /* Adj buttons must be visible */
+      .setting-adjusters {
+        position: static !important;
+        margin-top: 0.5rem !important;
+      }
+
+      .setting-card {
+        padding: 0.75rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+
+      /* Status indicators: 3 cols */
       .status-indicators {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.3rem;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.3rem !important;
       }
 
       .status-box {
-        padding: 0.5rem 0.3rem;
-        font-size: 0.6rem;
+        padding: 0.5rem 0.3rem !important;
+        font-size: 0.6rem !important;
+      }
+
+      .status-box-value {
+        font-size: 0.75rem !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
       }
 
       /* Zones grid: 2 columns on mobile (was 5) */
       .zones-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.4rem;
+        gap: 0.4rem !important;
       }
 
-      /* Zone cards: slightly larger touch areas */
       .zone-card {
-        padding: 0.75rem 0.5rem;
+        padding: 0.75rem 0.5rem !important;
+        overflow: visible !important;
       }
 
+      /* Zone name full width */
       .zone-name {
-        font-size: 0.7rem;
+        font-size: 0.75rem !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
       }
 
-      /* Relay grid: 2 cols on mobile (was 6) */
-      .relay-grid, [style*="grid-template-columns: repeat(6"] {
-        grid-template-columns: repeat(3, 1fr) !important;
+      /* Zone temp readable */
+      .zone-temp {
+        font-size: 1.5rem !important;
       }
 
-      /* Ramp schedule: 2 cols on mobile */
-      [style*="repeat(7, 1fr)"], [style*="repeat(10, 1fr)"] {
-        grid-template-columns: repeat(4, 1fr) !important;
-        font-size: 0.7rem;
+      /* Relay buttons readable */
+      .relay-btn, .zone-relay-btn {
+        font-size: 0.7rem !important;
+        padding: 0.4rem !important;
       }
 
       /* Popup modals full screen */
-      .popup-modal {
+      .popup-modal, [id$="-modal"] {
         width: 100vw !important;
         max-width: 100vw !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
+        min-height: 100vh !important;
         border-radius: 0 !important;
+        position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         transform: none !important;
         margin: 0 !important;
-        overflow-y: auto;
+        overflow-y: auto !important;
       }
 
-      /* HA entities grid */
-      [style*="repeat(auto-fill, minmax(250px"] {
-        grid-template-columns: 1fr !important;
-      }
-
-      [style*="repeat(auto-fill, minmax(300px"] {
-        grid-template-columns: 1fr !important;
-      }
-
-      /* Water section grids */
-      .water-daily-header {
-        grid-template-columns: 1fr 1fr !important;
-        font-size: 0.7rem;
-      }
-
-      /* Water chart full width */
-      .water-chart-header {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      /* Config grids */
-      [style*="grid-template-columns: 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-      }
-
-      /* Log entries */
-      .log-entry-header {
-        flex-direction: column;
-        gap: 0.25rem;
-      }
-
-      /* Buttons: larger tap area */
-      button, .btn, .ha-btn, .ha-btn-secondary {
-        min-height: 42px;
-      }
-
-      /* Input fields: larger on mobile */
+      /* Input fields: larger on mobile, prevents iOS zoom */
       input[type="text"],
       input[type="number"],
       input[type="password"],
-      select {
-        min-height: 42px;
-        font-size: 16px; /* prevents iOS zoom */
+      select, textarea {
+        min-height: 44px !important;
+        font-size: 16px !important;
+      }
+
+      /* Buttons: larger tap area */
+      button, .btn, .ha-btn, .ha-btn-secondary, .alarm-control-btn {
+        min-height: 44px !important;
       }
 
       /* Alarm controls wrap nicely */
       .alarm-controls {
-        gap: 0.4rem;
+        gap: 0.4rem !important;
       }
 
       .alarm-control-btn {
-        flex: 1 1 calc(50% - 0.4rem);
-        text-align: center;
+        flex: 1 1 calc(50% - 0.4rem) !important;
+        text-align: center !important;
       }
 
       /* Header buttons row */
       .header-buttons {
-        flex-wrap: wrap;
-        gap: 0.4rem;
+        flex-wrap: wrap !important;
+        gap: 0.4rem !important;
       }
 
       .header-buttons button {
-        flex: 1 1 auto;
-        font-size: 0.8rem;
-        padding: 0.5rem 0.75rem;
+        flex: 1 1 auto !important;
+        font-size: 0.8rem !important;
+        padding: 0.5rem 0.5rem !important;
       }
 
-      /* Main content less padding */
-      .main-content {
-        padding: 0.3rem;
-      }
-
-      /* Sync indicator stays visible */
+      /* Sync indicator stays above mobile browser bar */
       #sync-indicator {
-        bottom: 70px !important; /* above mobile browser bar */
-        font-size: 10px;
+        bottom: 70px !important;
+        font-size: 10px !important;
+      }
+
+      /* HA entities grids */
+      .ha-entities-grid {
+        grid-template-columns: 1fr !important;
       }
     }
 
-    /* Landscape phone */
+    /* Landscape phone — keep 5 zone columns */
     @media (max-width: 900px) and (orientation: landscape) {
       .zones-grid {
         grid-template-columns: repeat(5, 1fr) !important;
       }
-
       .settings-controls {
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr) !important;
+      }
+      .current-readings {
+        order: 0 !important;
+        grid-column: auto !important;
       }
     }
 
@@ -3521,7 +3523,7 @@
               </div>
             </div>
 
-            <div class="current-readings" style="position:relative; flex-direction:column; gap:0.4rem; min-width:360px;">
+            <div class="current-readings" style="position:relative; flex-direction:column; gap:0.4rem; min-width:0; width:100%;">
               <!-- Cost + Amps — top left corner -->
               <div style="position:absolute;top:0.45rem;left:0.55rem;display:flex;flex-direction:column;gap:0.2rem;line-height:1;">
                 <span style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:700;color:#2ecc71;">$<span id="mainCost">0.00</span><span style="font-size:0.68rem;opacity:0.7;margin-left:2px;">today</span></span>
