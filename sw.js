@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hvac-debug-v1';
+const CACHE_NAME = 'hvac-debug-v3';
 const ASSETS = [
   './',
   './index.html',
