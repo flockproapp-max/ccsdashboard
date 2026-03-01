@@ -10058,5 +10058,128 @@
       });
     }
   </script>
+
+  <!-- ══════════════════════════════════════════════════════
+       CLOUD SYNC — wraps localStorage so all settings
+       automatically sync across devices via window.storage.
+       No changes needed anywhere else in the app.
+  ══════════════════════════════════════════════════════ -->
+  <script>
+  (function() {
+    const SYNC_PREFIX = 'hvac:';
+    const SKIP_KEYS = ['kwhToday', 'kwhDate', 'waterPulseCount', 'pulseHistory', 'waterDailyHistory']; // high-frequency, device-local only
+
+    // ── Sync status indicator ──────────────────────────────
+    const indicator = document.createElement('div');
+    indicator.id = 'sync-indicator';
+    indicator.style.cssText = `
+      position: fixed; bottom: 12px; right: 12px; z-index: 99999;
+      background: #1e2538; border: 1px solid #2d3748; border-radius: 8px;
+      padding: 6px 12px; font-size: 11px; font-family: 'IBM Plex Sans', sans-serif;
+      color: #8b95a8; opacity: 0; transition: opacity 0.4s; pointer-events: none;
+    `;
+    document.body.appendChild(indicator);
+
+    function showSync(msg, color = '#8b95a8') {
+      indicator.textContent = msg;
+      indicator.style.color = color;
+      indicator.style.opacity = '1';
+      clearTimeout(indicator._t);
+      indicator._t = setTimeout(() => indicator.style.opacity = '0', 2500);
+    }
+
+    // ── Debounced cloud push ───────────────────────────────
+    const pushTimers = {};
+    async function pushToCloud(key, value) {
+      if (SKIP_KEYS.includes(key)) return;
+      clearTimeout(pushTimers[key]);
+      pushTimers[key] = setTimeout(async () => {
+        try {
+          if (!window.storage) return;
+          if (value === null) {
+            await window.storage.delete(SYNC_PREFIX + key);
+          } else {
+            await window.storage.set(SYNC_PREFIX + key, value);
+          }
+          showSync('☁ Synced', '#2ecc71');
+        } catch(e) {
+          console.warn('[CloudSync] push failed:', e);
+        }
+      }, 600);
+    }
+
+    // ── Pull all keys from cloud on startup ───────────────
+    async function pullFromCloud() {
+      try {
+        if (!window.storage) return;
+        showSync('☁ Loading settings…', '#feca57');
+        const result = await window.storage.list(SYNC_PREFIX);
+        if (!result || !result.keys || result.keys.length === 0) {
+          showSync('☁ No cloud settings yet', '#8b95a8');
+          return;
+        }
+        let loaded = 0;
+        for (const fullKey of result.keys) {
+          const key = fullKey.replace(SYNC_PREFIX, '');
+          if (SKIP_KEYS.includes(key)) continue;
+          try {
+            const r = await window.storage.get(fullKey);
+            if (r && r.value !== undefined) {
+              // Write directly to real localStorage (bypass our wrapper)
+              Object.getPrototypeOf(localStorage).setItem.call(localStorage, key, r.value);
+              loaded++;
+            }
+          } catch(e) {}
+        }
+        showSync(`☁ Loaded ${loaded} settings`, '#2ecc71');
+        // Re-fire any load functions the app uses
+        setTimeout(() => {
+          if (typeof loadAlarmSettings === 'function') loadAlarmSettings();
+          if (typeof loadPMAlarmSettings === 'function') loadPMAlarmSettings();
+        }, 100);
+      } catch(e) {
+        console.warn('[CloudSync] pull failed:', e);
+        showSync('☁ Offline mode', '#f39c12');
+      }
+    }
+
+    // ── Intercept localStorage ─────────────────────────────
+    const _setItem = Storage.prototype.setItem;
+    const _removeItem = Storage.prototype.removeItem;
+
+    Storage.prototype.setItem = function(key, value) {
+      _setItem.call(this, key, value);
+      if (this === localStorage) pushToCloud(key, value);
+    };
+
+    Storage.prototype.removeItem = function(key) {
+      _removeItem.call(this, key);
+      if (this === localStorage) pushToCloud(key, null);
+    };
+
+    // Pull cloud settings once page is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', pullFromCloud);
+    } else {
+      pullFromCloud();
+    }
+
+    // ── Manual sync button in settings (optional) ─────────
+    window.forceSyncToCloud = async function() {
+      if (!window.storage) return;
+      showSync('☁ Pushing all settings…', '#feca57');
+      let count = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!SKIP_KEYS.includes(key)) {
+          await window.storage.set(SYNC_PREFIX + key, localStorage.getItem(key));
+          count++;
+        }
+      }
+      showSync(`☁ Pushed ${count} settings`, '#2ecc71');
+    };
+
+  })();
+  </script>
 </body>
 </html>
