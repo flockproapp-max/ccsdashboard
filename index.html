@@ -2990,194 +2990,127 @@
     ═══════════════════════════════════════════════ */
     @media (max-width: 600px) {
 
-      /* Bigger touch targets */
-      .adj-btn {
-        width: 42px !important;
-        height: 42px !important;
-        font-size: 1.3rem !important;
-      }
+      .main-content { padding: 0.25rem !important; }
 
-      .nav-btn {
-        padding: 1rem 1.2rem;
-        font-size: 1rem;
-      }
-
-      /* Main content less padding */
-      .main-content {
-        padding: 0.25rem !important;
-      }
-
-      /* Header */
-      .settings-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
+      /* ── Zones: horizontal swipe ── */
+      .zones-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
         gap: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .zones-grid .zone-card {
+        flex: 0 0 75vw !important;
+        min-width: 75vw !important;
+        max-width: 75vw !important;
+        scroll-snap-align: start !important;
       }
 
-      .settings-title {
-        font-size: 1.1rem !important;
-      }
-
-      .settings-clock {
-        position: static !important;
-        transform: none !important;
-        font-size: 0.9rem !important;
-      }
-
-      /* Top controls: stack vertically - temp | hum, readings full width below */
+      /* ── Top controls: stack ── */
       .settings-controls {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
         gap: 0.5rem !important;
       }
-
-      /* Center readings takes full width - third item spans both columns */
       .current-readings {
-        grid-column: 1 / -1 !important;
+        order: -1 !important;
         min-width: 0 !important;
         width: 100% !important;
         padding: 0.75rem 1rem !important;
-        order: -1 !important;
       }
-
-      .readings-display {
-        font-size: 1.8rem !important;
-      }
-
-      /* Adj buttons must be visible */
+      .readings-display { font-size: 1.8rem !important; }
       .setting-adjusters {
         position: static !important;
+        display: flex !important;
+        gap: 0.5rem !important;
         margin-top: 0.5rem !important;
       }
+      .adj-btn { width: 44px !important; height: 44px !important; font-size: 1.3rem !important; }
 
-      .setting-card {
-        padding: 0.75rem !important;
-        display: flex !important;
-        flex-direction: column !important;
-      }
+      /* ── Status boxes ── */
+      .status-indicators { grid-template-columns: repeat(3, 1fr) !important; }
+      .status-box { padding: 0.4rem 0.2rem !important; font-size: 0.58rem !important; }
+      .status-box-value { font-size: 0.72rem !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
 
-      /* Status indicators: 3 cols */
-      .status-indicators {
-        grid-template-columns: repeat(3, 1fr) !important;
+      /* ── Zone modal: nav on top as pill row, content below ── */
+      .zone-modal-layout { flex-direction: column !important; overflow: visible !important; }
+      .zone-modal-nav {
+        width: 100% !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
         gap: 0.3rem !important;
+        padding: 0.75rem !important;
+        border-right: none !important;
+        border-bottom: 2px solid var(--border) !important;
       }
-
-      .status-box {
-        padding: 0.5rem 0.3rem !important;
-        font-size: 0.6rem !important;
+      .zone-modal-nav-btn {
+        flex: 1 1 auto !important;
+        font-size: 0.78rem !important;
+        padding: 0.45rem 0.3rem !important;
+        justify-content: center !important;
       }
+      .zone-modal-nav-label { display: none !important; }
+      .zone-modal-content { padding: 1rem !important; width: 100% !important; }
 
-      .status-box-value {
-        font-size: 0.75rem !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
+      /* ── Relay control: stack ── */
+      .relay-control-layout { flex-direction: column !important; overflow: visible !important; }
+      .relay-control-left {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 2px solid var(--border) !important;
+        padding: 1rem !important;
       }
-
-      /* Zones grid: 2 columns on mobile (was 5) */
-      .zones-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+      .relay-control-right { padding: 1rem !important; width: 100% !important; }
+      .relay-control-header, .popup-modal .relay-control-header {
+        display: flex !important;
+        flex-wrap: wrap !important;
         gap: 0.4rem !important;
-      }
-
-      .zone-card {
-        padding: 0.75rem 0.5rem !important;
+        font-size: 0.85rem !important;
+        padding: 0.75rem 1rem !important;
         overflow: visible !important;
       }
 
-      /* Zone name full width */
-      .zone-name {
-        font-size: 0.75rem !important;
-        white-space: normal !important;
-        overflow: visible !important;
-        text-overflow: unset !important;
-      }
-
-      /* Zone temp readable */
-      .zone-temp {
-        font-size: 1.5rem !important;
-      }
-
-      /* Relay buttons readable */
-      .relay-btn, .zone-relay-btn {
-        font-size: 0.7rem !important;
-        padding: 0.4rem !important;
-      }
-
-      /* Popup modals full screen */
-      .popup-modal, [id$="-modal"] {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        min-height: 100vh !important;
-        border-radius: 0 !important;
+      /* ── All modals full screen ── */
+      .popup-modal, .zone-modal {
         position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
+        top: 0 !important; left: 0 !important;
+        width: 100vw !important; height: 100vh !important;
+        max-width: 100vw !important; max-height: 100vh !important;
+        border-radius: 0 !important;
         transform: none !important;
         margin: 0 !important;
         overflow-y: auto !important;
       }
 
-      /* Input fields: larger on mobile, prevents iOS zoom */
-      input[type="text"],
-      input[type="number"],
-      input[type="password"],
-      select, textarea {
-        min-height: 44px !important;
-        font-size: 16px !important;
-      }
+      /* ── Config row single column ── */
+      .config-row { grid-template-columns: 1fr !important; }
 
-      /* Buttons: larger tap area */
-      button, .btn, .ha-btn, .ha-btn-secondary, .alarm-control-btn {
-        min-height: 44px !important;
+      /* ── Inputs prevent iOS zoom ── */
+      input[type="text"], input[type="number"], input[type="password"], select, textarea {
+        font-size: 16px !important; min-height: 44px !important;
       }
+      button, .btn, .ha-btn, .ha-btn-secondary { min-height: 44px !important; }
+      .header-buttons { flex-wrap: wrap !important; gap: 0.4rem !important; }
+      .header-buttons button { flex: 1 1 auto !important; font-size: 0.8rem !important; }
 
-      /* Alarm controls wrap nicely */
-      .alarm-controls {
-        gap: 0.4rem !important;
-      }
-
-      .alarm-control-btn {
-        flex: 1 1 calc(50% - 0.4rem) !important;
-        text-align: center !important;
-      }
-
-      /* Header buttons row */
-      .header-buttons {
-        flex-wrap: wrap !important;
-        gap: 0.4rem !important;
-      }
-
-      .header-buttons button {
-        flex: 1 1 auto !important;
-        font-size: 0.8rem !important;
-        padding: 0.5rem 0.5rem !important;
-      }
-
-      /* Sync indicator stays above mobile browser bar */
-      #sync-indicator {
-        bottom: 70px !important;
-        font-size: 10px !important;
-      }
-
-      /* HA entities grids */
-      .ha-entities-grid {
-        grid-template-columns: 1fr !important;
-      }
+      #sync-indicator { bottom: 70px !important; font-size: 10px !important; }
     }
 
-    /* Landscape phone — keep 5 zone columns */
+    /* ── Landscape: restore desktop layout ── */
     @media (max-width: 900px) and (orientation: landscape) {
       .zones-grid {
+        display: grid !important;
         grid-template-columns: repeat(5, 1fr) !important;
+        overflow-x: visible !important;
       }
-      .settings-controls {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr) !important;
-      }
-      .current-readings {
-        order: 0 !important;
-        grid-column: auto !important;
-      }
+      .zones-grid .zone-card { flex: unset !important; min-width: unset !important; max-width: unset !important; }
+      .settings-controls { display: grid !important; grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,1fr) !important; }
+      .current-readings { order: 0 !important; }
     }
 
     /* Responsive Design */
