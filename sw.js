@@ -1,6 +1,6 @@
-// ── AUTO-VERSION: change this string on every deploy ──────────────────────────
-// Tip: use your build timestamp or git commit hash here.
-const CACHE_VERSION = 'hvac-v8-2026-03-01'; // <-- bump this on every deploy
+// ── VERSION: auto-injected by GitHub Actions on every deploy ──────────────────
+// If deploying manually, bump this string each time you push.
+const CACHE_VERSION = 'hvac-v9-2026-03-01';
 const CACHE_NAME = `hvac-cache-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -15,7 +15,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting(); // take over immediately — don't wait for old tabs to close
+  self.skipWaiting();
 });
 
 // Activate: nuke ALL old caches, then claim all open tabs
@@ -39,7 +39,6 @@ self.addEventListener('fetch', event => {
                  url.pathname.endsWith('/');
 
   if (isHTML) {
-    // Force a real network request — bypasses both the SW cache AND the browser HTTP cache
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
         .then(response => {
@@ -53,7 +52,6 @@ self.addEventListener('fetch', event => {
         })
     );
   } else {
-    // Cache-first for static assets
     event.respondWith(
       caches.match(event.request).then(cached => {
         if (cached) return cached;
