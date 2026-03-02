@@ -10231,9 +10231,36 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('SW registered:', reg.scope))
-          .catch(err => console.warn('SW registration failed:', err));
+        navigator.serviceWorker.register('sw.js', {
+          // Always re-fetch sw.js itself — never serve it from browser cache
+          updateViaCache: 'none'
+        }).then(reg => {
+          console.log('[SW] Registered:', reg.scope);
+
+          // Check for updates every 60 seconds (catches deploys while app is open)
+          setInterval(() => reg.update(), 60 * 1000);
+
+          // A new SW is waiting — reload to activate it immediately
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('[SW] New version ready — reloading for update');
+                newWorker.postMessage('SKIP_WAITING');
+              }
+            });
+          });
+        }).catch(err => console.warn('[SW] Registration failed:', err));
+
+        // When the SW activates and claims this tab, reload to get fresh HTML
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) {
+            refreshing = true;
+            console.log('[SW] Controller changed — reloading page');
+            window.location.reload();
+          }
+        });
       });
     }
   </script>

@@ -1,4 +1,8 @@
-const CACHE_NAME = 'hvac-debug-v7';
+// ── AUTO-VERSION: change this string on every deploy ──────────────────────────
+// Tip: use your build timestamp or git commit hash here.
+const CACHE_VERSION = 'hvac-v8-2026-03-01'; // <-- bump this on every deploy
+const CACHE_NAME = `hvac-cache-${CACHE_VERSION}`;
+
 const ASSETS = [
   './manifest.json',
   './icon-192.png',
@@ -11,20 +15,22 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
+  self.skipWaiting(); // take over immediately — don't wait for old tabs to close
 });
 
-// Activate: clear old caches
+// Activate: nuke ALL old caches, then claim all open tabs
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => {
+        console.log('[SW] Deleting old cache:', k);
+        return caches.delete(k);
+      }))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch: network-first for HTML, cache-first for everything else
+// Fetch: ALWAYS network-first for HTML, bypass HTTP cache entirely
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   const isHTML = event.request.destination === 'document' ||
@@ -33,23 +39,26 @@ self.addEventListener('fetch', event => {
                  url.pathname.endsWith('/');
 
   if (isHTML) {
-    // Network-first: always try to get the latest HTML
+    // Force a real network request — bypasses both the SW cache AND the browser HTTP cache
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-store' })
         .then(response => {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;
         })
-        .catch(() => caches.match(event.request)) // offline fallback
+        .catch(() => {
+          console.warn('[SW] Network failed, serving cached HTML (offline)');
+          return caches.match(event.request);
+        })
     );
   } else {
-    // Cache-first for static assets (images, fonts, etc.)
+    // Cache-first for static assets
     event.respondWith(
       caches.match(event.request).then(cached => {
         if (cached) return cached;
         return fetch(event.request).then(response => {
-          if (response && response.status === 200 && response.type === 'basic') {
+          if (response && response.status === 200 && response.type !== 'opaque') {
             const clone = response.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           }
@@ -57,5 +66,13 @@ self.addEventListener('fetch', event => {
         }).catch(() => cached);
       })
     );
+  }
+});
+
+// Message handler: allow the page to force SW updates
+self.addEventListener('message', event => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data === 'CLEAR_CACHE') {
+    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
   }
 });
