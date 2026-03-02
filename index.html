@@ -134,6 +134,31 @@
       gap: 0.5rem;
     }
 
+    /* ── Top Tab Navigation ─────────────────────────────────────────── */
+    .top-tab-btn {
+      padding: .75rem 1.1rem;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+      letter-spacing: .03em;
+    }
+    .top-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,.04);
+    }
+    .top-tab-btn.active {
+      color: #00d2d3;
+      border-bottom-color: #00d2d3;
+      background: rgba(0,210,211,.06);
+    }
+
     .nav-label {
       font-size: 0.75rem;
       text-transform: uppercase;
@@ -3865,21 +3890,19 @@
           </button>
         </div>
 
-        <!-- Left-nav + content layout matching power monitor modal -->
-        <div style="display:flex;gap:0;min-height:600px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <!-- Top tabs layout -->
+        <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
 
-          <!-- Left Nav -->
-          <div style="width:200px;min-width:200px;background:var(--bg-tertiary);border-right:1px solid var(--border);padding:1rem 0.75rem;display:flex;flex-direction:column;gap:0;">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;">DATA</div>
-            <button class="off-modal-nav-btn active" id="sTab-data" onclick="sSwitchTab('data')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:#1e2538;border:1px solid #00d2d3;border-radius:8px;color:#00d2d3;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;font-weight:600;margin-bottom:.3rem;">💾 Backup / Restore</button>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;margin-top:.75rem;">HARDWARE</div>
-            <button class="off-modal-nav-btn" id="sTab-wifi" onclick="sSwitchTab('wifi')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">📶 WiFi</button>
-            <button class="off-modal-nav-btn" id="sTab-rs485" onclick="sSwitchTab('rs485')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">🔌 RS485</button>
-            <button class="off-modal-nav-btn" id="sTab-mqtt" onclick="sSwitchTab('mqtt')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">📡 MQTT</button>
+          <!-- Top Tab Bar -->
+          <div style="display:flex;gap:0;background:var(--bg-tertiary);border-bottom:1px solid var(--border);padding:0 1rem;overflow-x:auto;">
+            <button class="top-tab-btn active" id="sTab-data" onclick="sSwitchTab('data')">💾 Backup / Restore</button>
+            <button class="top-tab-btn" id="sTab-wifi" onclick="sSwitchTab('wifi')">📶 WiFi</button>
+            <button class="top-tab-btn" id="sTab-rs485" onclick="sSwitchTab('rs485')">🔌 RS485</button>
+            <button class="top-tab-btn" id="sTab-mqtt" onclick="sSwitchTab('mqtt')">📡 MQTT</button>
           </div>
 
           <!-- Content area -->
-          <div style="flex:1;padding:1.5rem;overflow-y:auto;">
+          <div style="padding:1.5rem;overflow-y:auto;min-height:500px;">
 
             <!-- Backup / Restore -->
             <div id="sContent-data">
@@ -4003,26 +4026,20 @@
       </div>
 
       <!-- Body -->
-      <div class="zone-modal-layout">
+      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
 
-        <!-- Left nav -->
-        <nav class="zone-modal-nav">
-          <div class="zone-modal-nav-label">Sensors</div>
-          <button class="zone-modal-nav-btn active" onclick="showZoneSection('sec-calibration', this)">🌡️ Calibration</button>
-          <button class="zone-modal-nav-btn" onclick="showZoneSection('sec-ha', this)">🏠 Home Assistant</button>
-          <button class="zone-modal-nav-btn" onclick="showZoneSection('sec-alerts', this)">🔔 Alerts</button>
+        <!-- Top Tab Bar -->
+        <div style="display:flex;gap:0;background:var(--bg-tertiary);border-bottom:1px solid var(--border);padding:0 1rem;overflow-x:auto;flex-shrink:0;">
+          <button class="top-tab-btn zone-tab-btn active" onclick="showZoneSection('sec-calibration', this)">🌡️ Calibration</button>
+          <button class="top-tab-btn zone-tab-btn" onclick="showZoneSection('sec-ha', this)">🏠 Home Assistant</button>
+          <button class="top-tab-btn zone-tab-btn" onclick="showZoneSection('sec-alerts', this)">🔔 Alerts</button>
+          <button class="top-tab-btn zone-tab-btn" onclick="showZoneSection('sec-humidity', this); renderHumiditySection()">💧 Humidity</button>
+          <button class="top-tab-btn zone-tab-btn" onclick="showZoneSection('sec-relays', this)">⚡ Relays</button>
+          <button class="top-tab-btn zone-tab-btn" id="nav-barn-fans-btn" style="display:none;" onclick="showZoneSection('sec-barn-fans', this)">🌀 Barn Fans</button>
+        </div><!-- end top tab bar -->
 
-          <div class="zone-modal-nav-label">Control</div>
-          <button class="zone-modal-nav-btn" onclick="showZoneSection('sec-humidity', this); renderHumiditySection()">💧 Humidity Control</button>
-
-          <div class="zone-modal-nav-label">Hardware</div>
-          <button class="zone-modal-nav-btn" onclick="showZoneSection('sec-relays', this)">⚡ Relay Config</button>
-          <div class="zone-modal-nav-label" id="nav-barn-fans" style="display:none;">Barn Control</div>
-          <button class="zone-modal-nav-btn" id="nav-barn-fans-btn" style="display:none;" onclick="showZoneSection('sec-barn-fans', this)">🌀 Barn Fans</button>
-        </nav>
-
-        <!-- Right content -->
-        <div class="zone-modal-content" id="modalBody">
+        <!-- Content -->
+        <div class="zone-modal-content" id="modalBody" style="flex:1;overflow-y:auto;">
 
           <!-- Sensor Calibration -->
           <div class="zone-modal-section active" id="sec-calibration">
@@ -4187,7 +4204,7 @@
           </div>
 
         </div><!-- end zone-modal-content -->
-      </div><!-- end zone-modal-layout -->
+      </div><!-- end zone top-tabs wrapper -->
     </div>
 
     <!-- Reading Source Config Modal -->
@@ -4251,25 +4268,21 @@
         </div>
         <button class="fullpage-save-btn" onclick="savePowerEntities()">Save</button>
       </div>
-      <div class="fullpage-layout">
+      <!-- Top tabs replace fullpage-layout -->
+      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
 
-        <!-- LEFT NAV -->
-        <div class="fullpage-left" style="overflow-y:auto;">
-          <div class="off-modal-nav-label" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;">ALARMS</div>
-          <button class="off-modal-nav-btn active" id="pmTab-alarm" onclick="pmSwitchTab('alarm')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:#1e2538;border:1px solid #00d2d3;border-radius:8px;color:#00d2d3;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;font-weight:600;margin-bottom:.3rem;">🔔 Global Alarm</button>
-          <div class="off-modal-nav-label" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;margin-top:.75rem;">SCHEDULE</div>
-          <button class="off-modal-nav-btn" id="pmTab-ramp" onclick="pmSwitchTab('ramp')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">📉 Ramp Schedule</button>
-          <div class="off-modal-nav-label" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;margin-top:.75rem;">POWER</div>
-          <button class="off-modal-nav-btn" id="pmTab-ha" onclick="pmSwitchTab('ha')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">⚡ HA Entity IDs</button>
-          <button class="off-modal-nav-btn" id="pmTab-rate" onclick="pmSwitchTab('rate')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">💰 Electricity Rate</button>
-          <div class="off-modal-nav-label" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;margin-top:.75rem;">NOTIFICATIONS</div>
-          <button class="off-modal-nav-btn" id="pmTab-telegram" onclick="pmSwitchTab('telegram')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">✈️ Telegram</button>
-          <div class="off-modal-nav-label" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;margin-top:.75rem;">INFO</div>
-          <button class="off-modal-nav-btn" id="pmTab-preview" onclick="pmSwitchTab('preview')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">📊 Live Preview</button>
+        <!-- Top Tab Bar -->
+        <div style="display:flex;gap:0;background:var(--bg-tertiary);border-bottom:1px solid var(--border);padding:0 1rem;overflow-x:auto;flex-shrink:0;">
+          <button class="top-tab-btn active" id="pmTab-alarm" onclick="pmSwitchTab('alarm')">🔔 Global Alarm</button>
+          <button class="top-tab-btn" id="pmTab-ramp" onclick="pmSwitchTab('ramp')">📉 Ramp Schedule</button>
+          <button class="top-tab-btn" id="pmTab-ha" onclick="pmSwitchTab('ha')">⚡ HA Entity IDs</button>
+          <button class="top-tab-btn" id="pmTab-rate" onclick="pmSwitchTab('rate')">💰 Electricity Rate</button>
+          <button class="top-tab-btn" id="pmTab-telegram" onclick="pmSwitchTab('telegram')">✈️ Telegram</button>
+          <button class="top-tab-btn" id="pmTab-preview" onclick="pmSwitchTab('preview')">📊 Live Preview</button>
         </div>
 
-        <!-- RIGHT CONTENT -->
-        <div class="fullpage-right" style="overflow-y:auto;padding:2rem 2.5rem;">
+        <!-- Content -->
+        <div style="flex:1;overflow-y:auto;padding:2rem 2.5rem;">
 
           <!-- Global Alarm tab -->
           <div id="pmContent-alarm">
@@ -7005,11 +7018,9 @@
       window.currentConfigZone = zoneIdx;
 
       // Show/hide Barn Fans tab for OFFICE and OUTSIDE only
-      const barnFanNav    = document.getElementById('nav-barn-fans');
       const barnFanNavBtn = document.getElementById('nav-barn-fans-btn');
       const barnFanSec    = document.getElementById('sec-barn-fans');
       if (zoneIdx >= 3) {
-        if (barnFanNav)    barnFanNav.style.display    = '';
         if (barnFanNavBtn) barnFanNavBtn.style.display = '';
         if (barnFanSec)    barnFanSec.style.display    = '';
         // Load saved barn fan settings for this zone
@@ -7028,7 +7039,6 @@
         }
         updateBarnFanPreview(zoneIdx);
       } else {
-        if (barnFanNav)    barnFanNav.style.display    = 'none';
         if (barnFanNavBtn) barnFanNavBtn.style.display = 'none';
         if (barnFanSec)    barnFanSec.style.display    = 'none';
       }
@@ -7043,7 +7053,7 @@
       // Hide all sections
       document.querySelectorAll('.zone-modal-section').forEach(s => s.classList.remove('active'));
       // Deactivate all nav buttons
-      document.querySelectorAll('.zone-modal-nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.zone-tab-btn').forEach(b => b.classList.remove('active'));
       // Show target
       document.getElementById(sectionId).classList.add('active');
       if (btn) btn.classList.add('active');
@@ -7054,7 +7064,7 @@
       document.getElementById('zoneModal').classList.remove('active');
       document.body.style.overflow = 'auto';
       // Reset nav to first tab
-      showZoneSection('sec-calibration', document.querySelector('.zone-modal-nav-btn'));
+      showZoneSection('sec-calibration', document.querySelector('.zone-tab-btn'));
     }
 
     // Save Zone Configuration
