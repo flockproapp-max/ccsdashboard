@@ -4518,68 +4518,83 @@
         </div>
       </div>
 
-      <div class="fullpage-layout">
-        <!-- Left: flock info + today's entry -->
-        <div class="fullpage-left">
-          <div class="fullpage-section-title">Flock Information</div>
-          <div class="flock-info-section" style="background:none;border:none;padding:0;">
-            <div class="flock-info-grid">
-              <div class="flock-info-item">
-                <label class="flock-info-label">Start Date</label>
-                <input type="date" id="flockStartDate" class="flock-info-input">
-              </div>
-              <div class="flock-info-item">
-                <label class="flock-info-label">Starting Bird Count</label>
-                <input type="number" id="flockStartCount" class="flock-info-input" value="0" min="0" step="1">
-              </div>
-              <div class="flock-info-display">
-                <div class="flock-info-stat">
-                  <span class="flock-stat-label">Flock Age:</span>
-                  <span class="flock-stat-value" id="flockAgeDays">0 days</span>
-                </div>
-                <div class="flock-info-stat">
-                  <span class="flock-stat-label">Current Count:</span>
-                  <span class="flock-stat-value" id="flockCurrentCount">0 birds</span>
-                </div>
-                <div class="flock-info-stat">
-                  <span class="flock-stat-label">Mortality Rate:</span>
-                  <span class="flock-stat-value" id="flockMortality">0%</span>
-                </div>
-              </div>
-            </div>
-            <button class="flock-save-btn" onclick="saveFlockInfo()">Save Flock Info</button>
-          </div>
-
-          <div class="fullpage-section-title" style="margin-top:1.5rem;">Today's Log Entry</div>
-          <div class="log-entry-form" style="background:none;border:none;padding:0;">
-            <div class="log-form-row">
-              <label class="log-label">Date</label>
-              <input type="date" id="logDate" class="log-input" />
-            </div>
-            <div class="log-form-row">
-              <label class="log-label">Bird Deaths</label>
-              <input type="number" id="logDeaths" class="log-input" value="0" min="0" step="1">
-            </div>
-            <div class="log-form-row">
-              <label class="log-label">Medications</label>
-              <textarea id="logMedications" class="log-textarea" placeholder="Enter medications given today..."></textarea>
-            </div>
-            <div class="log-form-row">
-              <label class="log-label">Water Additives</label>
-              <textarea id="logWaterAdditives" class="log-textarea" placeholder="Enter water additives/supplements..."></textarea>
-            </div>
-            <div class="log-form-row">
-              <label class="log-label">Notes</label>
-              <textarea id="logNotes" class="log-textarea" placeholder="Additional notes..."></textarea>
-            </div>
-            <button class="log-save-btn" onclick="saveDailyLog()">Save Entry</button>
-          </div>
+      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+        <!-- Top Tab Bar -->
+        <div style="display:flex;gap:0;background:var(--bg-tertiary);border-bottom:1px solid var(--border);padding:0 1rem;overflow-x:auto;flex-shrink:0;">
+          <button class="top-tab-btn active" id="flockTab-info" onclick="flockSwitchTab('info')">🐔 Flock Info</button>
+          <button class="top-tab-btn" id="flockTab-entry" onclick="flockSwitchTab('entry')">📝 Today's Entry</button>
+          <button class="top-tab-btn" id="flockTab-history" onclick="flockSwitchTab('history')">📋 Log History</button>
         </div>
 
-        <!-- Right: log history -->
-        <div class="fullpage-right">
-          <div class="fullpage-section-title">Log History</div>
-          <div class="log-history-list" id="logHistoryList"></div>
+        <!-- Content panels -->
+        <div style="flex:1;overflow-y:auto;padding:2rem 2.5rem;">
+
+          <!-- Flock Info panel -->
+          <div id="flockContent-info">
+            <div class="fullpage-section-title">Flock Information</div>
+            <div class="flock-info-section" style="background:none;border:none;padding:0;">
+              <div class="flock-info-grid">
+                <div class="flock-info-item">
+                  <label class="flock-info-label">Start Date</label>
+                  <input type="date" id="flockStartDate" class="flock-info-input">
+                </div>
+                <div class="flock-info-item">
+                  <label class="flock-info-label">Starting Bird Count</label>
+                  <input type="number" id="flockStartCount" class="flock-info-input" value="0" min="0" step="1">
+                </div>
+                <div class="flock-info-display">
+                  <div class="flock-info-stat">
+                    <span class="flock-stat-label">Flock Age:</span>
+                    <span class="flock-stat-value" id="flockAgeDays">0 days</span>
+                  </div>
+                  <div class="flock-info-stat">
+                    <span class="flock-stat-label">Current Count:</span>
+                    <span class="flock-stat-value" id="flockCurrentCount">0 birds</span>
+                  </div>
+                  <div class="flock-info-stat">
+                    <span class="flock-stat-label">Mortality Rate:</span>
+                    <span class="flock-stat-value" id="flockMortality">0%</span>
+                  </div>
+                </div>
+              </div>
+              <button class="flock-save-btn" onclick="saveFlockInfo()">Save Flock Info</button>
+            </div>
+          </div>
+
+          <!-- Today's Entry panel -->
+          <div id="flockContent-entry" style="display:none;">
+            <div class="fullpage-section-title">Today's Log Entry</div>
+            <div class="log-entry-form" style="background:none;border:none;padding:0;">
+              <div class="log-form-row">
+                <label class="log-label">Date</label>
+                <input type="date" id="logDate" class="log-input" />
+              </div>
+              <div class="log-form-row">
+                <label class="log-label">Bird Deaths</label>
+                <input type="number" id="logDeaths" class="log-input" value="0" min="0" step="1">
+              </div>
+              <div class="log-form-row">
+                <label class="log-label">Medications</label>
+                <textarea id="logMedications" class="log-textarea" placeholder="Enter medications given today..."></textarea>
+              </div>
+              <div class="log-form-row">
+                <label class="log-label">Water Additives</label>
+                <textarea id="logWaterAdditives" class="log-textarea" placeholder="Enter water additives/supplements..."></textarea>
+              </div>
+              <div class="log-form-row">
+                <label class="log-label">Notes</label>
+                <textarea id="logNotes" class="log-textarea" placeholder="Additional notes..."></textarea>
+              </div>
+              <button class="log-save-btn" onclick="saveDailyLog()">Save Entry</button>
+            </div>
+          </div>
+
+          <!-- Log History panel -->
+          <div id="flockContent-history" style="display:none;">
+            <div class="fullpage-section-title">Log History</div>
+            <div class="log-history-list" id="logHistoryList"></div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -4610,12 +4625,19 @@
         <button class="relay-control-save-btn" onclick="saveRelayControl()">Save</button>
       </div>
 
-      <!-- Body: left controls + right timers -->
-      <div class="relay-control-layout">
+      <!-- Top tab bar + body -->
+      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+        <!-- Top Tab Bar -->
+        <div style="display:flex;gap:0;background:var(--bg-tertiary);border-bottom:1px solid var(--border);padding:0 1rem;overflow-x:auto;flex-shrink:0;">
+          <button class="top-tab-btn active" id="relayTab-mode" onclick="relaySwitchTab('mode')">⚡ Control Mode</button>
+          <button class="top-tab-btn" id="relayTab-timers" onclick="relaySwitchTab('timers')">⏱ Timer Intervals</button>
+        </div>
 
-        <!-- Left: mode buttons -->
-        <div class="relay-control-left">
-          <div>
+        <!-- Content panels -->
+        <div style="flex:1;overflow-y:auto;padding:2rem 2.5rem;background:var(--bg-primary);">
+
+          <!-- Control Mode panel -->
+          <div id="relayContent-mode">
             <div class="relay-control-section-label">Control Mode</div>
             <div class="relay-control-buttons">
               <button class="relay-control-btn" onclick="setRelayMode('on')">Force ON</button>
@@ -4623,21 +4645,21 @@
               <button class="relay-control-btn active" onclick="setRelayMode('auto')">Set to Auto</button>
             </div>
           </div>
-        </div>
 
-        <!-- Right: timers -->
-        <div class="relay-control-right">
-          <div class="relay-control-right-title">⏱ Daily Timer Intervals</div>
-          <div class="relay-timer-buttons">
-            <button class="relay-timer-btn relay-timer-btn-add" onclick="addTimerInterval()">
-              + Add New Interval
-            </button>
+          <!-- Timers panel -->
+          <div id="relayContent-timers" style="display:none;">
+            <div class="relay-control-right-title">⏱ Daily Timer Intervals</div>
+            <div class="relay-timer-buttons">
+              <button class="relay-timer-btn relay-timer-btn-add" onclick="addTimerInterval()">
+                + Add New Interval
+              </button>
+            </div>
+            <div class="relay-timer-list" id="relayTimerList">
+              <!-- Timer intervals will be added here -->
+            </div>
           </div>
-          <div class="relay-timer-list" id="relayTimerList">
-            <!-- Timer intervals will be added here -->
-          </div>
-        </div>
 
+        </div>
       </div>
     </div>
 
@@ -4652,21 +4674,16 @@
         <button class="fullpage-save-btn" onclick="saveWaterAlarms()">Save</button>
       </div>
 
-      <div class="fullpage-layout">
-        <!-- Left: vertical nav sidebar -->
-        <div class="fullpage-left">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;">SETUP</div>
-          <button id="wTab-counter" onclick="wSwitchTab('counter')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:#1e2538;border:1px solid #00d2d3;border-radius:8px;color:#00d2d3;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;font-weight:600;margin-bottom:.3rem;">⚙️ Counter</button>
-
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;margin-top:.75rem;">ALARMS</div>
-          <button id="wTab-daily" onclick="wSwitchTab('daily')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">⚙️ Limit Settings</button>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#4a5568;padding:0 .5rem;margin-bottom:.4rem;margin-top:.75rem;">HISTORY</div>
-          <button id="wTab-daily-history" onclick="wSwitchTab('daily-history')" style="width:100%;display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;background:transparent;border:1px solid transparent;border-radius:8px;color:#8b95a8;font-size:.9rem;cursor:pointer;text-align:left;font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;">📅 Daily History</button>
-
+      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+        <!-- Top Tab Bar -->
+        <div style="display:flex;gap:0;background:var(--bg-tertiary);border-bottom:1px solid var(--border);padding:0 1rem;overflow-x:auto;flex-shrink:0;">
+          <button class="top-tab-btn active" id="wTab-counter" onclick="wSwitchTab('counter')">⚙️ Counter</button>
+          <button class="top-tab-btn" id="wTab-daily" onclick="wSwitchTab('daily')">⚙️ Limit Settings</button>
+          <button class="top-tab-btn" id="wTab-daily-history" onclick="wSwitchTab('daily-history')">📅 Daily History</button>
         </div>
 
-        <!-- Content panels (rendered beside the nav in fullpage-right) -->
-        <div class="fullpage-right" style="display:flex;flex-direction:column;gap:0;">
+        <!-- Content panels -->
+        <div style="flex:1;overflow-y:auto;padding:2rem 2.5rem;display:flex;flex-direction:column;gap:0;">
 
           <!-- Counter panel -->
           <div id="wContent-counter">
@@ -4830,7 +4847,6 @@
         </div>
       </div>
     </div>
-  </div>
 
   <script>
     // ── Hardcoded HA defaults — pre-populate localStorage on load ──
@@ -6250,10 +6266,12 @@
         const content = document.getElementById('wContent-'+t);
         const active = t === tab;
         if (btn) {
-          btn.style.background  = active ? '#1e2538' : 'transparent';
-          btn.style.borderColor = active ? '#00d2d3' : 'transparent';
-          btn.style.color       = active ? '#00d2d3' : '#8b95a8';
-          btn.style.fontWeight  = active ? '600' : 'normal';
+          btn.classList.toggle('active', active);
+          // clear any leftover inline styles from old sidebar layout
+          btn.style.background = '';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+          btn.style.fontWeight = '';
         }
         if (content) content.style.display = active ? 'block' : 'none';
       });
@@ -7301,6 +7319,16 @@
     // Relay Control Modal Functions
     let currentRelayControl = { zoneIdx: null, relayIdx: null, mode: 'auto', timers: [] };
 
+    function relaySwitchTab(tab) {
+      ['mode','timers'].forEach(t => {
+        const btn = document.getElementById('relayTab-'+t);
+        const content = document.getElementById('relayContent-'+t);
+        const active = t === tab;
+        if (btn) btn.classList.toggle('active', active);
+        if (content) content.style.display = active ? 'block' : 'none';
+      });
+    }
+
     function openRelayControl(zoneIdx, relayIdx) {
       const zone = zones[zoneIdx];
       const relayName = (zones[zoneIdx] && zones[zoneIdx].relayNames && zones[zoneIdx].relayNames[relayIdx]) ? zones[zoneIdx].relayNames[relayIdx] : RELAY_NAMES[relayIdx];
@@ -7342,6 +7370,7 @@
       // Show modal
       document.getElementById('relayControlModal').classList.add('active');
       document.body.style.overflow = 'hidden';
+      relaySwitchTab('mode');
     }
 
     function closeRelayControl() {
@@ -7840,6 +7869,16 @@
     }
 
     // Daily Log Functions
+    function flockSwitchTab(tab) {
+      ['info','entry','history'].forEach(t => {
+        const btn = document.getElementById('flockTab-'+t);
+        const content = document.getElementById('flockContent-'+t);
+        const active = t === tab;
+        if (btn) btn.classList.toggle('active', active);
+        if (content) content.style.display = active ? 'block' : 'none';
+      });
+    }
+
     function openDailyLogModal() {
       // Load flock info
       document.getElementById('flockStartDate').value = flockInfo.startDate || '';
@@ -10190,8 +10229,13 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('SW registered:', reg.scope))
+        const swScope = location.pathname.replace(/\/[^/]*$/, '/') || '/';
+        navigator.serviceWorker.register('./sw.js', { scope: swScope })
+          .then(reg => {
+            console.log('SW registered:', reg.scope);
+            // Force update check every time the page loads
+            reg.update();
+          })
           .catch(err => console.warn('SW registration failed:', err));
       });
     }
