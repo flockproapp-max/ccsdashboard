@@ -3659,9 +3659,15 @@
           </div>
           
           <div class="ha-import-form">
+            <!-- Mixed content warning: shown when HTTP url used on HTTPS page -->
+            <div id="haMixedContentWarn" style="display:none;background:#7f1d1d;border:1px solid #dc2626;border-radius:8px;padding:0.65rem 1rem;margin-bottom:1rem;font-size:0.8rem;font-family:'JetBrains Mono',monospace;color:#fca5a5;line-height:1.6;">
+              ⚠️ <strong>Mixed Content Blocked.</strong> This page is HTTPS but your HA URL is HTTP — browsers block this automatically.<br><br>
+              <strong>On-site fix (free, instant):</strong> Access the app from your local network at <code>http://10.0.68.64/index.html</code> instead of GitHub Pages — HA connects instantly.<br><br>
+              <strong>Remote fix:</strong> Enable HTTPS on HA using the <em>Let's Encrypt</em> add-on or <em>Nabu Casa</em>, then update this URL to <code>https://</code>.
+            </div>
             <div class="ha-input-group">
               <label class="ha-input-label">Home Assistant URL</label>
-              <input type="text" class="ha-input" id="haUrl" placeholder="http://10.0.1.84:8123">
+              <input type="text" class="ha-input" id="haUrl" placeholder="http://10.0.1.84:8123" oninput="const w=document.getElementById('haMixedContentWarn');if(w)w.style.display=(location.protocol==='https:'&&this.value.startsWith('http://'))?'block':'none';">
             </div>
             <div class="ha-input-group">
               <label class="ha-input-label">Long-Lived Access Token</label>
@@ -4932,6 +4938,14 @@
     const _HA_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4MTVkMGU1ZGRhMjc0YmI1ODhhNGE3NGU0NmIzZTZhMCIsImlhdCI6MTc3MTI2Mzk3NCwiZXhwIjoyMDg2NjIzOTc0fQ.Vyia4jEqC1MN0aEJSyBXUoOyL5txqFnkF52C5c-Ihb8';
     if (!localStorage.getItem('haUrl'))   localStorage.setItem('haUrl',   _HA_URL);
     if (!localStorage.getItem('haToken')) localStorage.setItem('haToken', _HA_TOKEN);
+    // Show mixed-content warning on load if saved URL is HTTP but page is HTTPS
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedUrl = localStorage.getItem('haUrl') || '';
+      const warn = document.getElementById('haMixedContentWarn');
+      if (warn && location.protocol === 'https:' && savedUrl.startsWith('http://')) {
+        warn.style.display = 'block';
+      }
+    });
     if (!localStorage.getItem('waterEntityId')) localStorage.setItem('waterEntityId', 'counter.ccs_ha_display');
 
     // ── Modal toast helper ────────────────────────────────────────
@@ -10307,9 +10321,31 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('SW registered:', reg.scope))
-          .catch(err => console.warn('SW registration failed:', err));
+        navigator.serviceWorker.register('sw.js', {
+          updateViaCache: 'none' // always re-fetch sw.js itself, never serve from browser cache
+        }).then(reg => {
+          console.log('[SW] Registered:', reg.scope);
+
+          // Poll for updates every 60s — catches new deploys while app is open
+          setInterval(() => reg.update(), 60 * 1000);
+
+          // New SW found — tell it to activate immediately
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('[SW] New version ready — activating');
+                newWorker.postMessage('SKIP_WAITING');
+              }
+            });
+          });
+        }).catch(err => console.warn('[SW] Registration failed:', err));
+
+        // When new SW takes control, reload once to get fresh HTML
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) { refreshing = true; window.location.reload(); }
+        });
       });
     }
   </script>
