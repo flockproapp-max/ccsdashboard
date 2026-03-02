@@ -1,6 +1,6 @@
 // ── VERSION: auto-injected by GitHub Actions on every deploy ──────────────────
 // If deploying manually, bump this string each time you push.
-const CACHE_VERSION = 'hvac-v9-'20260302020717';
+const CACHE_VERSION = 'hvac-v9-'20260302021350';
 const CACHE_NAME = `hvac-cache-${CACHE_VERSION}`;
 
 const ASSETS = [
