@@ -3159,11 +3159,13 @@
 
     @media (max-width: 768px) {
       .settings-controls {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 0.5rem;
       }
       
       .current-readings {
+        grid-column: 1 / -1;
         order: -1;
         min-width: auto;
         width: 100%;
@@ -10229,13 +10231,8 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        const swScope = location.pathname.replace(/\/[^/]*$/, '/') || '/';
-        navigator.serviceWorker.register('./sw.js', { scope: swScope })
-          .then(reg => {
-            console.log('SW registered:', reg.scope);
-            // Force update check every time the page loads
-            reg.update();
-          })
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
           .catch(err => console.warn('SW registration failed:', err));
       });
     }
