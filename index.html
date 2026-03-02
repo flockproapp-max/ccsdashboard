@@ -1451,6 +1451,45 @@
       box-shadow: 0 4px 12px rgba(46, 204, 113, 0.35);
     }
 
+    /* ── Mobile: topbar wraps to 2 rows so nothing overlaps ── */
+    @media (max-width: 600px) {
+      .relay-control-topbar {
+        height: auto !important;
+        flex-wrap: wrap !important;
+        padding: 0.5rem 0.75rem !important;
+        gap: 0.3rem 0 !important;
+        align-items: center !important;
+      }
+      .relay-control-topbar-left {
+        flex: 1 !important;
+        gap: 0.5rem !important;
+        min-width: 0 !important;
+      }
+      .relay-control-title {
+        font-size: 1.1rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .relay-control-topbar-meta {
+        /* push to its own row, full width, below the title */
+        width: 100% !important;
+        order: 3 !important;
+        gap: 0.75rem !important;
+        flex-wrap: wrap !important;
+        padding: 0.2rem 0 0.25rem 0 !important;
+      }
+      .relay-control-status,
+      .relay-control-mode,
+      .relay-control-runtime {
+        font-size: 0.78rem !important;
+      }
+      .relay-control-save-btn {
+        padding: 0.45rem 1rem !important;
+        font-size: 0.85rem !important;
+      }
+    }
+
     /* ── Full-page modals (weight, daily log, water alarm) ── */
     .fullpage-modal {
       position: fixed;
@@ -1534,6 +1573,38 @@
       background: #27ae60;
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(46, 204, 113, 0.35);
+    }
+
+    /* ── Mobile: fullpage topbar — prevent title overflow ── */
+    @media (max-width: 600px) {
+      .fullpage-topbar {
+        height: auto !important;
+        padding: 0.5rem 0.75rem !important;
+        gap: 0.5rem !important;
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+      }
+      .fullpage-topbar-left {
+        flex: 1 !important;
+        min-width: 0 !important;
+        gap: 0.5rem !important;
+        align-items: flex-start !important;
+      }
+      .fullpage-title {
+        font-size: 1.05rem !important;
+        white-space: normal !important;
+        line-height: 1.2 !important;
+      }
+      .fullpage-subtitle {
+        font-size: 0.72rem !important;
+        white-space: normal !important;
+      }
+      .fullpage-save-btn {
+        flex-shrink: 0 !important;
+        padding: 0.45rem 0.9rem !important;
+        font-size: 0.82rem !important;
+        align-self: center !important;
+      }
     }
 
     /* Single-column scrollable body (weight history) */
@@ -3036,17 +3107,22 @@
         scroll-snap-align: start !important;
       }
 
-      /* ── Top controls: stack ── */
+      /* ── Top controls: readings full-width on top, then 2 cards side by side ── */
       .settings-controls {
-        display: flex !important;
-        flex-direction: column !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto !important;
         gap: 0.5rem !important;
       }
       .current-readings {
+        grid-column: 1 / -1 !important; /* span both columns */
         order: -1 !important;
         min-width: 0 !important;
         width: 100% !important;
         padding: 0.75rem 1rem !important;
+      }
+      .setting-card {
+        min-width: 0 !important;
       }
       .readings-display { font-size: 1.8rem !important; }
       .setting-adjusters {
@@ -10231,36 +10307,9 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js', {
-          // Always re-fetch sw.js itself — never serve it from browser cache
-          updateViaCache: 'none'
-        }).then(reg => {
-          console.log('[SW] Registered:', reg.scope);
-
-          // Check for updates every 60 seconds (catches deploys while app is open)
-          setInterval(() => reg.update(), 60 * 1000);
-
-          // A new SW is waiting — reload to activate it immediately
-          reg.addEventListener('updatefound', () => {
-            const newWorker = reg.installing;
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('[SW] New version ready — reloading for update');
-                newWorker.postMessage('SKIP_WAITING');
-              }
-            });
-          });
-        }).catch(err => console.warn('[SW] Registration failed:', err));
-
-        // When the SW activates and claims this tab, reload to get fresh HTML
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!refreshing) {
-            refreshing = true;
-            console.log('[SW] Controller changed — reloading page');
-            window.location.reload();
-          }
-        });
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.warn('SW registration failed:', err));
       });
     }
   </script>
@@ -10399,12 +10448,12 @@
         card.style.cssText += ';flex:0 0 78vw!important;min-width:78vw!important;max-width:78vw!important;scroll-snap-align:start!important;';
       });
     }
-    // Stack settings controls
+    // Side-by-side setting cards with readings full-width on top
     const controls = document.querySelector('.settings-controls');
-    if (controls) controls.style.cssText = 'display:flex!important;flex-direction:column!important;gap:0.5rem!important;';
-    // Make current-readings first
+    if (controls) controls.style.cssText = 'display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-rows:auto auto!important;gap:0.5rem!important;';
+    // Make current-readings span both columns and appear first
     const readings = document.querySelector('.current-readings');
-    if (readings) { readings.style.order = '-1'; readings.style.minWidth = '0'; readings.style.width = '100%'; }
+    if (readings) { readings.style.cssText += ';grid-column:1/-1!important;order:-1!important;min-width:0!important;width:100%!important;'; }
     // Fix adj buttons
     document.querySelectorAll('.setting-adjusters').forEach(el => {
       el.style.cssText = 'position:static!important;display:flex!important;gap:0.5rem!important;margin-top:0.5rem!important;';
@@ -10449,11 +10498,13 @@
       scroll-snap-align: start !important;
     }
     .settings-controls {
-      display: flex !important;
-      flex-direction: column !important;
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      grid-template-rows: auto auto !important;
       gap: 0.5rem !important;
     }
     .current-readings {
+      grid-column: 1 / -1 !important;
       order: -1 !important;
       min-width: 0 !important;
       width: 100% !important;
